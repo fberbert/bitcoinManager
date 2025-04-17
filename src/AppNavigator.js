@@ -12,26 +12,26 @@ import useUsdRate from './hooks/useUsdRate';
 
 const Stack = createStackNavigator();
 
-// Context Global
+// Global Context
 export const PriceContext = createContext();
 
 export default function AppNavigator() {
-  // Hook que retorna o valor do BTC (ex.: "XBTUSDTM", "BTC-USDT", depende do símbolo exato)
-  const cotacaoBTCUSD = useKucoinTicker('XBTUSDTM');
+  // Hook that returns the BTC price (e.g., "XBTUSDTM", "BTC-USDT", depending on exact symbol)
+  const btcUsdPrice = useKucoinTicker('XBTUSDTM');
   const usdRate = useUsdRate();
 
-  const [cotacaoBTCBRL, setCotacaoBTCBRL] = useState(0);
+  const [btcBrlPrice, setBtcBrlPrice] = useState(0);
 
 
 
   useEffect(() => {
-    // const price = 99500.0; // Exemplo de cotação manual do Bitcoin
-    // setCotacaoBTCUSD(price); // Atualiza em USD
-    setCotacaoBTCBRL(cotacaoBTCUSD * usdRate); // Atualiza em BRL
-  }, [cotacaoBTCUSD, usdRate]);
+    // Example: manual Bitcoin price update
+    // setBtcUsdPrice(price); // Update in USD
+    setBtcBrlPrice(btcUsdPrice * usdRate); // Update in BRL
+  }, [btcUsdPrice, usdRate]);
 
   return (
-    <PriceContext.Provider value={{cotacaoBTCUSD, cotacaoBTCBRL, usdRate}}>
+    <PriceContext.Provider value={{btcUsdPrice, btcBrlPrice, usdRate}}>
       <Stack.Navigator initialRouteName="Splash" screenOptions={{headerShown: false}}>
         <Stack.Screen
           name="Splash"

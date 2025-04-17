@@ -2,8 +2,8 @@
 import { useState, useEffect, useRef } from 'react';
 
 /**
- * Hook que busca a cotação do USDT/BRL na Binance a cada 1 minuto.
- * Retorna a última cotação como número (float).
+ * Hook that fetches the USDT/BRL exchange rate from Binance every minute.
+ * Returns the latest rate as a floating-point number.
  */
 export default function useUsdRate() {
   const [usdRate, setUsdRate] = useState(0);
@@ -11,8 +11,8 @@ export default function useUsdRate() {
 
   const fetchUsdRate = async () => {
     try {
-      // Endpoint público da Binance para preço atual de um par
-      // Verifique se "USDTBRL" está disponível em Binance (pode variar se há mercado spot para esse par).
+      // Public Binance endpoint for the current price of a trading pair
+      // Ensure that "USDTBRL" is available on Binance (may vary if the spot market exists).
       const response = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTBRL');
       const data = await response.json();
 

@@ -18,7 +18,7 @@ export default function SplashScreen({ navigation }) {
         style={styles.imageBG}
       >
         <View style={styles.overlay}>
-          <Text style={styles.text}>Carregando...</Text>
+          <Text style={styles.text}>Loading...</Text>
         </View>
       </ImageBackground>
     </View>

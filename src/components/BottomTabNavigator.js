@@ -53,7 +53,7 @@ const BottomTabNavigator = () => {
         name="Calculator"
         component={HomeScreen}
         options={{
-          tarBarLabel: i18n.t('calculator'),
+          tabBarLabel: i18n.t('calculator'),
           headerTitle: i18n.t('calculatorSection'),
         }}
       />
@@ -71,7 +71,7 @@ const BottomTabNavigator = () => {
         name="Settings"
         component={SettingsScreen}
         options={{
-          tarBarLabel: i18n.t('settings'),
+          tabBarLabel: i18n.t('settings'),
           headerTitle: i18n.t('settingsSection'),
         }}
       />
@@ -79,7 +79,7 @@ const BottomTabNavigator = () => {
         name="About"
         component={AboutScreen}
         options={{
-          tarBarLabel: i18n.t('about'),
+          tabBarLabel: i18n.t('about'),
           headerTitle: i18n.t('aboutSection'),
           // tabBarButton: () => null, // This hides the tab in the bottom bar
           // tabBarVisible: false, // This is optional, just to be explicit

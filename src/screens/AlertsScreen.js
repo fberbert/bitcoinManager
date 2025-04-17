@@ -30,7 +30,7 @@ export default function AlertsScreen() {
 
             <TextInput
               style={customStyles.input}
-              placeholder="Par de moedas"
+              placeholder="Currency Pair"
               placeholderTextColor="#ccc"
             />
 
@@ -49,7 +49,7 @@ export default function AlertsScreen() {
               <Text style={customStyles.white}>
                 <IconB name="bell" />
                 {'  '}
-                Criar Alerta
+                Create Alert
               </Text>
             </TouchableOpacity>
           </View>

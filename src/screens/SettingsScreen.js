@@ -143,7 +143,7 @@ export default function SettingsScreen({navigation}) {
               <View style={{alignItems: 'center', marginVertical: 20}}>
                 <ActivityIndicator size="large" color="#fff" />
                 <Text style={{color: '#fff', marginTop: 10}}>
-                  {i18n.t('btnSaving') || 'Salvando...'}
+                  {i18n.t('btnSaving') || 'Saving...'}
                 </Text>
               </View>
             )}

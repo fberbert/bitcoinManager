@@ -15,38 +15,38 @@ import customStyles from '../Styles';
 import {PriceContext} from '../AppNavigator';
 
 export default function HomeScreen({navigation}) {
-  const {cotacaoBTCUSD, cotacaoBTCBRL, usdRate} = useContext(PriceContext);
+  const {btcUsdPrice, btcBrlPrice, usdRate} = useContext(PriceContext);
 
-  // Estados para inputs
+  // State variables for inputs
   const [inputUSD, setInputUSD] = useState('');
   const [inputBRL, setInputBRL] = useState('');
   const [inputBTC, setInputBTC] = useState('');
 
-  // Estado para armazenar a cor do container
+  // State to store the background color of the display area
   const [displayAreaBg, setDisplayAreaBg] = useState('#444');
 
-  // Para sabermos se o input foi USD, BRL ou BTC (último editado)
+  // To track which input was last edited: USD, BRL, or BTC
   const [lastInputChanged, setLastInputChanged] = useState(null);
 
-  // Guardar o valor do BTCUSD de 1 minuto atrás para comparação
+  // Store the BTC-USD price from one minute ago for comparison
   const price1MinAgo = useRef(0);
 
-  // Guardar o timestamp da última atualização
+  // Store the timestamp of the last update
   const lastUpdate = useRef(Date.now());
 
-  // Efeito 1: Dispara a cada vez que a tela é montada, cria interval para comparar a cada 1 min
+  // Effect 1: runs when component mounts and updates background color based on price changes every minute
   useEffect(() => {
     const updateBg = () => {
-      if (cotacaoBTCUSD > price1MinAgo.current) {
-        // Compara a cotação atual com a de 1 minuto atrás
+      if (btcUsdPrice > price1MinAgo.current) {
+        // Compare current price with the price from one minute ago
         setDisplayAreaBg('#355F2E'); // verde
-      } else if (cotacaoBTCUSD < price1MinAgo.current) {
+      } else if (btcUsdPrice < price1MinAgo.current) {
         setDisplayAreaBg('#8D0B41'); // vermelho
       } else {
         setDisplayAreaBg('#444'); // mesma cor (não houve mudança)
       }
-      // Atualiza para a próxima comparação em 1 min
-      if (cotacaoBTCUSD !== 0) price1MinAgo.current = cotacaoBTCUSD;
+        // Update price1MinAgo for the next comparison
+      if (btcUsdPrice !== 0) price1MinAgo.current = btcUsdPrice;
     };
 
     const now = Date.now();
@@ -56,10 +56,10 @@ export default function HomeScreen({navigation}) {
       updateBg();
       lastUpdate.current = now;
     }
-  }, [cotacaoBTCUSD]);
+  }, [btcUsdPrice]);
 
-  // Efeito 2: Toda vez que o user muda alguma coisa em USD, BRL ou BTC, capturamos em lastInputChanged
-  // (Isso para sabermos de qual campo fazer o cálculo no clique de "Calcular")
+  // Effect 2: track which input field (USD, BRL, or BTC) was last changed
+  // (Used in calculate() to determine conversion logic)
   const handleChangeUSD = text => {
     setInputUSD(text);
     setLastInputChanged('USD');
@@ -75,49 +75,51 @@ export default function HomeScreen({navigation}) {
     setLastInputChanged('BTC');
   };
 
-  // 3) Formatação de moeda
-  function formatarMoeda(valor, moeda) {
+  // 3) Format a number as a currency string
+  function formatCurrency(value, currency) {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: moeda,
-    }).format(valor);
+      currency: currency,
+    }).format(value);
   }
 
-  // 4) Ao perder o foco, formata automaticamente caso seja USD ou BRL
+  // 4) On blur, automatically format USD or BRL inputs
   const handleBlurUSD = () => {
-    // Se estiver vazio, não faz nada
+    // Do nothing if input is empty
     if (!inputUSD.trim()) return;
     // Extrair número antes de formatar
     const parsed = parseNumeric(inputUSD);
-    calcular();
-    setInputUSD(formatarMoeda(parsed, 'USD').replace('US$', 'US$ '));
+    calculate();
+    setInputUSD(formatCurrency(parsed, 'USD').replace('US$', 'US$ '));
   };
 
   const handleBlurBRL = () => {
+    // Do nothing if input is empty
     if (!inputBRL.trim()) return;
     const parsed = parseNumeric(inputBRL);
-    calcular();
-    setInputBRL(formatarMoeda(parsed, 'BRL').replace('R$', 'R$ '));
+    calculate();
+    setInputBRL(formatCurrency(parsed, 'BRL').replace('R$', 'R$ '));
   };
 
-  // BTC normalmente não formatamos com símbolo monetário, mas poderíamos exibir com 8 casas decimais, se quisermos
+  // For BTC we typically avoid currency symbol; display with 8 decimal places
   const handleBlurBTC = () => {
+    // Do nothing if input is empty
     if (!inputBTC.trim()) return;
     const parsed = parseNumeric(inputBTC);
-    calcular();
+    calculate();
     setInputBTC(parsed.toFixed(8));
   };
 
-  // 5) Função para extrair valor numérico de um campo que pode estar formatado
-  //    ex: "US$ 23.45" -> 23.45
-  function parseNumeric(valor) {
-    // Remove qualquer caractere que não seja número, ponto ou vírgula
-    const clean = valor.replace(/[^\d.,-]/g, '').replace(',', '.');
+  // 5) Extract a numeric value from a formatted string (e.g., "US$ 23.45" -> 23.45)
+  function parseNumeric(rawValue) {
+    // Remove any character that is not digit, dot, comma, or minus
+    const clean = rawValue.replace(/[^\d.,-]/g, '').replace(',', '.');
     return parseFloat(clean) || 0;
   }
 
   // 6) Lógica de Cálculo - baseada em qual foi o último campo alterado
-  function calcular() {
+  // Calculate conversion based on last changed input
+  function calculate() {
     const nUSD = parseNumeric(inputUSD);
     const nBRL = parseNumeric(inputBRL);
     const nBTC = parseNumeric(inputBTC);
@@ -128,21 +130,21 @@ export default function HomeScreen({navigation}) {
 
     switch (lastInputChanged) {
       case 'USD':
-        // cálculo a partir de USD
-        btc = nUSD / cotacaoBTCUSD;
-        brl = btc * cotacaoBTCBRL;
+        // calculate based on USD input
+        btc = nUSD / btcUsdPrice;
+        brl = btc * btcBrlPrice;
         usd = nUSD;
         break;
       case 'BRL':
-        // cálculo a partir de BRL
-        btc = nBRL / cotacaoBTCBRL;
-        usd = btc * cotacaoBTCUSD;
+        // calculate based on BRL input
+        btc = nBRL / btcBrlPrice;
+        usd = btc * btcUsdPrice;
         brl = nBRL;
         break;
       case 'BTC':
-        // cálculo a partir de BTC
-        usd = nBTC * cotacaoBTCUSD;
-        brl = nBTC * cotacaoBTCBRL;
+        // calculate based on BTC input
+        usd = nBTC * btcUsdPrice;
+        brl = nBTC * btcBrlPrice;
         btc = nBTC;
         break;
       default:
@@ -151,16 +153,17 @@ export default function HomeScreen({navigation}) {
     }
 
     // Atualizamos estado com formatação
-    setInputUSD(formatarMoeda(usd, 'USD').replace('US$', 'US$ '));
-    setInputBRL(formatarMoeda(brl, 'BRL').replace('R$', 'R$ '));
+    setInputUSD(formatCurrency(usd, 'USD').replace('US$', 'US$ '));
+    setInputBRL(formatCurrency(brl, 'BRL').replace('R$', 'R$ '));
     // BTC pode ser exibido com 8 casas decimais
     setInputBTC(btc.toFixed(8));
 
-    // Sincroniza state
+    // Synchronize state to storage
     syncState();
   }
 
-  function limpar() {
+  // Clear all input fields
+  function clearInputs() {
     setInputUSD('');
     setInputBRL('');
     setInputBTC('');
@@ -202,12 +205,12 @@ export default function HomeScreen({navigation}) {
 
               <View style={{marginLeft: 10}}>
                 {/* BTC em USD */}
-                <Text style={customStyles.displayText}>
-                  {formatarMoeda(cotacaoBTCUSD, 'USD').replace('US$', 'US$ ')}{' '}
+  <Text style={customStyles.displayText}>
+                  {formatCurrency(btcUsdPrice, 'USD').replace('US$', 'US$ ')}{' '}
                 </Text>
                 {/* BTC em BRL */}
                 <Text style={customStyles.displayText}>
-                  {formatarMoeda(cotacaoBTCBRL, 'BRL').replace('R$', 'R$ ')}{' '}
+                  {formatCurrency(btcBrlPrice, 'BRL').replace('R$', 'R$ ')}{' '}
                 </Text>
               </View>
             </View>
@@ -261,7 +264,7 @@ export default function HomeScreen({navigation}) {
               <TouchableHighlight
                 style={customStyles.btnCalculate}
                 underlayColor="#888"
-                onPress={calcular}>
+                onPress={calculate}>
                 <Text style={customStyles.white}>
                   <IconB name="calculator" />
                   {'  '}
@@ -272,7 +275,7 @@ export default function HomeScreen({navigation}) {
               <TouchableHighlight
                 style={customStyles.btnCalculate}
                 underlayColor="#888"
-                onPress={limpar}>
+                onPress={clearInputs}>
                 <Text style={customStyles.white}>
                   <IconB name="eraser" />
                   {'  '}
