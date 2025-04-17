@@ -51,7 +51,7 @@ export default function HomeScreen({navigation}) {
 
     const now = Date.now();
     const diff = now - lastUpdate;
-    // 5 minutos
+    // 5 minutes
     if (diff > 300000 || price1MinAgo.current === 0) {
       updateBg();
       lastUpdate.current = now;
