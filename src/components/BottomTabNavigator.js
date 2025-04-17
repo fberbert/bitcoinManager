@@ -2,7 +2,6 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
-import OpenPositionScreen from '../screens/OpenPositionScreen';
 // import AlertsScreen from '../screens/AlertsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import AboutScreen from '../screens/AboutScreen';
@@ -56,14 +55,6 @@ const BottomTabNavigator = () => {
         options={{
           tarBarLabel: i18n.t('calculator'),
           headerTitle: i18n.t('calculatorSection'),
-        }}
-      />
-      <Tab.Screen
-        name="OpenPosition"
-        component={OpenPositionScreen}
-        options={{
-          tarBarLabel: i18n.t('openPositionSection'),
-          headerTitle: i18n.t('openPositionSection'),
         }}
       />
       {/*

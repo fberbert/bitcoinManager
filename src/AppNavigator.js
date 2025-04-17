@@ -2,7 +2,6 @@ import React, {createContext, useState, useEffect} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import SplashScreen from './screens/SplashScreen';
 import HomeScreen from './screens/HomeScreen';
-import OpenPositionScreen from './screens/OpenPositionScreen';
 import AlertsScreen from './screens/AlertsScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import AboutScreen from './screens/AboutScreen';
@@ -45,11 +44,6 @@ export default function AppNavigator() {
           component={HomeScreen}
         />
 
-        <Stack.Screen
-          name="OpenPosition"
-          component={OpenPositionScreen}
-          options={{headerShown: false}}
-        />
 
         <Stack.Screen
           name="Alerts"

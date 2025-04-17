@@ -1,7 +1,6 @@
 {
   "appName": "Bitcoin Manager",
   "calculatorSection": "Bitcoin Manager",
-  "openPositionSection": "Trade",
   "aboutSection": "Sobre o Bitcoin Manager",
   "alertsSection": "Alertas de preço",
   "dollar": "Dólar",
@@ -19,7 +18,6 @@
   "settingsSection": "Configurações",
   "tradingViewLabel": "Habitilar TradingView",
 
-  "openPosition": "Abrir Posição",
   "symbol": "Símbolo",
   "side": "Lado",
   "leverage": "Alavancagem",

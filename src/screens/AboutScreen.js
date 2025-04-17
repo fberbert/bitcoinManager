@@ -28,9 +28,9 @@ export default function AboutScreen() {
             <Text
               style={[customStyles.about.text, {color: '#3a3'}]}
               onPress={() =>
-                Linking.openURL('https://github.com/fberbert/bitcoinConverter')
+                Linking.openURL('https://github.com/fberbert/bitcoinManager')
               }>
-              https://github.com/fberbert/bitcoinConverter
+              https://github.com/fberbert/bitcoinManager
             </Text>
             <Text style={customStyles.about.text}>
               {'\n'}
